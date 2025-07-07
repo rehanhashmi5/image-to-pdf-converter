@@ -34,7 +34,7 @@ A free online tool to convert multiple images to a single PDF file. Built with H
 2. Upload all files (index.html, style.css, script.js)
 3. Go to Settings > Pages
 4. Select the main branch as the source
-5. Your site will be published at `https://<username>.github.io/<repository-name>/`
+5. Your site will be published at `https://rehanhashmi5.github.io/<repository-name>/`
 
 ## License
 
