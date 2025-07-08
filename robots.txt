@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://rehanhashmi5.github.io/image-to-pdf-converter/sitemap.xml
