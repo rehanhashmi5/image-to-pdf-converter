@@ -301,3 +301,39 @@ footer i {
         flex-direction: column;
     }
 }
+/* Fixes for button functionality */
+input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+.btn {
+    position: relative;
+    z-index: 1;
+}
+
+.upload-area {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Ensure clickable area */
+button, [role="button"] {
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Remove any potential overlays */
+body::before, body::after {
+    display: none !important;
+}
+
+/* Debug borders - remove after testing */
+/* * { outline: 1px solid red; } */
