@@ -247,3 +247,77 @@ footer i {
         flex-direction: column;
     }
 }
+/* Word Converter Specific Styles */
+#wordConverter {
+  margin-top: 3rem;
+  border-top: 1px solid #eee;
+  padding-top: 2rem;
+}
+
+.converter-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.converter-header .fa-file-word {
+  color: #2b579a;
+  font-size: 2rem;
+}
+
+.file-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.file-preview-item {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.file-preview-item i {
+  color: #2b579a;
+}
+/* Merge PDF Specific Styles */
+#mergePdfSection .fa-file-pdf {
+  color: #f40f02; /* PDF red */
+}
+
+.sortable {
+  cursor: move;
+}
+
+.sortable-item {
+  background: #f8f9fa;
+  padding: 0.8rem;
+  margin-bottom: 0.5rem;
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  border: 1px solid #ddd;
+}
+
+.sortable-item.dragging {
+  opacity: 0.5;
+  border: 1px dashed var(--primary-color);
+}
+
+.sortable-item i {
+  color: #f40f02;
+}
+
+.merge-options {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
