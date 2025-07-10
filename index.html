@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Tools | Image/Word to PDF & Merge</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-file-pdf"></i> PDF Tools</h1>
+            <p>Convert and merge files to PDF</p>
+        </header>
+
+        <main>
+            <!-- Image to PDF Converter -->
+            <section class="converter-section">
+                <div class="converter-header">
+                    <i class="fas fa-image"></i>
+                    <h2>Image to PDF Converter</h2>
+                </div>
+                
+                <div class="upload-area" id="dropArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Drag & Drop Images Here</h3>
+                    <p>or</p>
+                    <button id="selectFiles" class="btn">Select Images</button>
+                    <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+                    <div class="restrictions">
+                        <p>Supports: JPG, PNG, GIF, WEBP</p>
+                        <p>Max file size: 5MB per image</p>
+                    </div>
+                </div>
+
+                <div class="options">
+                    <div class="option">
+                        <label for="pageSize">Page Size:</label>
+                        <select id="pageSize">
+                            <option value="A4">A4</option>
+                            <option value="Letter">Letter</option>
+                            <option value="Legal">Legal</option>
+                        </select>
+                    </div>
+                    <div class="option">
+                        <label for="orientation">Orientation:</label>
+                        <select id="orientation">
+                            <option value="portrait">Portrait</option>
+                            <option value="landscape">Landscape</option>
+                        </select>
+                    </div>
+                    <div class="option">
+                        <label for="margin">Margin (mm):</label>
+                        <input type="number" id="margin" min="0" max="50" value="10">
+                    </div>
+                </div>
+
+                <div class="preview-section" id="previewSection" style="display: none;">
+                    <h3>Selected Images</h3>
+                    <div class="image-preview" id="imagePreview"></div>
+                    <button id="convertBtn" class="btn convert-btn">Convert to PDF</button>
+                    <button id="clearBtn" class="btn clear-btn">Clear All</button>
+                </div>
+            </section>
+
+            <!-- Word to PDF Converter -->
+            <section class="converter-section" id="wordConverter">
+                <div class="converter-header">
+                    <i class="fas fa-file-word"></i>
+                    <h2>Word to PDF Converter</h2>
+                </div>
+                
+                <div class="upload-area" id="wordDropArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Drag & Drop Word Files Here</h3>
+                    <p>or</p>
+                    <button id="selectWordFiles" class="btn">Select Files</button>
+                    <input type="file" id="wordFileInput" accept=".doc,.docx" multiple style="display:none;">
+                </div>
+                
+                <div class="preview-section" id="wordPreviewSection" style="display:none;">
+                    <h3>Selected Files</h3>
+                    <div class="file-preview" id="wordFilePreview"></div>
+                    <button id="convertWordBtn" class="btn convert-btn">
+                        <i class="fas fa-file-pdf"></i> Convert to PDF
+                    </button>
+                    <button id="clearWordBtn" class="btn clear-btn">Clear All</button>
+                </div>
+            </section>
+
+            <!-- Merge PDF Section -->
+            <section class="converter-section" id="mergePdfSection">
+                <div class="converter-header">
+                    <i class="fas fa-file-pdf"></i>
+                    <h2>Merge PDF Files</h2>
+                </div>
+                
+                <div class="upload-area" id="mergeDropArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Drag & Drop PDFs Here</h3>
+                    <p>or</p>
+                    <button id="selectMergeFiles" class="btn">Select PDFs</button>
+                    <input type="file" id="mergeFileInput" accept=".pdf" multiple style="display:none;">
+                </div>
+                
+                <div class="preview-section" id="mergePreviewSection" style="display:none;">
+                    <h3>Files to Merge (Drag to reorder)</h3>
+                    <div class="file-preview sortable" id="mergeFilePreview"></div>
+                    <div class="merge-options">
+                        <label>
+                            <input type="checkbox" id="addPageNumbers"> Add page numbers
+                        </label>
+                    </div>
+                    <button id="mergeBtn" class="btn convert-btn">
+                        <i class="fas fa-object-group"></i> Merge PDFs
+                    </button>
+                    <button id="clearMergeBtn" class="btn clear-btn">Clear All</button>
+                </div>
+            </section>
+
+            <div class="loading" id="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Processing...</p>
+            </div>
+        </main>
+
+        <footer>
+            <p>Made with <i class="fas fa-heart"></i> | Free to use | Hosted on GitHub</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
