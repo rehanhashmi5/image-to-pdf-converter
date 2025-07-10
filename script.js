@@ -271,3 +271,288 @@ document.addEventListener('DOMContentLoaded', function() {
         return mm * 2.83465; // 1mm = 2.83465 points
     }
 });
+// ======================
+// WORD TO PDF CONVERTER
+// ======================
+const wordDropArea = document.getElementById('wordDropArea');
+const wordFileInput = document.getElementById('wordFileInput');
+const selectWordFiles = document.getElementById('selectWordFiles');
+const wordPreviewSection = document.getElementById('wordPreviewSection');
+const wordFilePreview = document.getElementById('wordFilePreview');
+const convertWordBtn = document.getElementById('convertWordBtn');
+const clearWordBtn = document.getElementById('clearWordBtn');
+
+let wordFiles = [];
+
+// File Selection
+selectWordFiles.addEventListener('click', () => wordFileInput.click());
+wordFileInput.addEventListener('change', handleWordFileSelect);
+
+// Drag & Drop
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event => {
+  wordDropArea.addEventListener(event, preventDefaults, false);
+  wordDropArea.addEventListener(event, highlight, false);
+});
+
+function highlight() {
+  wordDropArea.classList.add('drag-over');
+}
+
+function unhighlight() {
+  wordDropArea.classList.remove('drag-over');
+}
+
+wordDropArea.addEventListener('drop', handleWordDrop, false);
+
+function handleWordDrop(e) {
+  const dt = e.dataTransfer;
+  handleWordFiles(dt.files);
+}
+
+function handleWordFileSelect(e) {
+  handleWordFiles(e.target.files);
+}
+
+function handleWordFiles(files) {
+  wordFiles = Array.from(files).filter(file => 
+    file.name.match(/\.(doc|docx)$/i)
+  );
+  
+  if (wordFiles.length === 0) {
+    alert('Please select Word files only (.doc or .docx)');
+    return;
+  }
+  
+  showWordPreview();
+}
+
+function showWordPreview() {
+  wordFilePreview.innerHTML = '';
+  
+  wordFiles.forEach((file, index) => {
+    const previewItem = document.createElement('div');
+    previewItem.className = 'file-preview-item';
+    previewItem.innerHTML = `
+      <i class="fas fa-file-word"></i>
+      <span>${file.name}</span>
+      <button class="remove-word-btn" data-index="${index}">
+        <i class="fas fa-times"></i>
+      </button>
+    `;
+    wordFilePreview.appendChild(previewItem);
+  });
+  
+  wordPreviewSection.style.display = 'block';
+  
+  // Add remove button events
+  document.querySelectorAll('.remove-word-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const index = e.currentTarget.dataset.index;
+      wordFiles.splice(index, 1);
+      showWordPreview();
+      if (wordFiles.length === 0) {
+        wordPreviewSection.style.display = 'none';
+      }
+    });
+  });
+}
+
+// Conversion Function (Using libreoffice API)
+convertWordBtn.addEventListener('click', async () => {
+  if (wordFiles.length === 0) return;
+  
+  loading.style.display = 'block';
+  
+  try {
+    for (const file of wordFiles) {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      // Using free conversion API
+      const response = await fetch('https://api.example-convert.com/convert', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (!response.ok) throw new Error('Conversion failed');
+      
+      const pdfBlob = await response.blob();
+      saveAs(pdfBlob, `${file.name.replace(/\.[^/.]+$/, '')}.pdf`);
+    }
+  } catch (error) {
+    alert('Error: ' + error.message);
+  } finally {
+    loading.style.display = 'none';
+  }
+});
+
+clearWordBtn.addEventListener('click', () => {
+  wordFiles = [];
+  wordFileInput.value = '';
+  wordPreviewSection.style.display = 'none';
+});
+// ======================
+// MERGE PDF FUNCTIONALITY
+// ======================
+const mergeDropArea = document.getElementById('mergeDropArea');
+const mergeFileInput = document.getElementById('mergeFileInput');
+const selectMergeFiles = document.getElementById('selectMergeFiles');
+const mergePreviewSection = document.getElementById('mergePreviewSection');
+const mergeFilePreview = document.getElementById('mergeFilePreview');
+const mergeBtn = document.getElementById('mergeBtn');
+const clearMergeBtn = document.getElementById('clearMergeBtn');
+const addPageNumbers = document.getElementById('addPageNumbers');
+
+let pdfFilesToMerge = [];
+
+// File Selection
+selectMergeFiles.addEventListener('click', () => mergeFileInput.click());
+mergeFileInput.addEventListener('change', handleMergeFileSelect);
+
+// Drag & Drop
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event => {
+  mergeDropArea.addEventListener(event, preventDefaults, false);
+  mergeDropArea.addEventListener(event, highlight, false);
+});
+
+mergeDropArea.addEventListener('drop', handleMergeDrop, false);
+
+function handleMergeDrop(e) {
+  const dt = e.dataTransfer;
+  handleMergeFiles(dt.files);
+}
+
+function handleMergeFileSelect(e) {
+  handleMergeFiles(e.target.files);
+}
+
+function handleMergeFiles(files) {
+  const newFiles = Array.from(files).filter(file => 
+    file.type === 'application/pdf'
+  );
+  
+  if (newFiles.length === 0) {
+    alert('Please select PDF files only');
+    return;
+  }
+  
+  pdfFilesToMerge = [...pdfFilesToMerge, ...newFiles];
+  showMergePreview();
+}
+
+function showMergePreview() {
+  mergeFilePreview.innerHTML = '';
+  
+  pdfFilesToMerge.forEach((file, index) => {
+    const previewItem = document.createElement('div');
+    previewItem.className = 'sortable-item';
+    previewItem.draggable = true;
+    previewItem.dataset.index = index;
+    previewItem.innerHTML = `
+      <i class="fas fa-file-pdf"></i>
+      <span>${file.name}</span>
+      <button class="remove-merge-btn" data-index="${index}">
+        <i class="fas fa-times"></i>
+      </button>
+    `;
+    mergeFilePreview.appendChild(previewItem);
+  });
+  
+  // Add drag and drop sorting
+  setupDragAndDrop();
+  
+  // Add remove button events
+  document.querySelectorAll('.remove-merge-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const index = e.currentTarget.dataset.index;
+      pdfFilesToMerge.splice(index, 1);
+      showMergePreview();
+    });
+  });
+  
+  mergePreviewSection.style.display = 'block';
+}
+
+function setupDragAndDrop() {
+  const items = mergeFilePreview.querySelectorAll('.sortable-item');
+  
+  items.forEach(item => {
+    item.addEventListener('dragstart', () => {
+      item.classList.add('dragging');
+    });
+    
+    item.addEventListener('dragend', () => {
+      item.classList.remove('dragging');
+    });
+  });
+  
+  mergeFilePreview.addEventListener('dragover', e => {
+    e.preventDefault();
+    const draggingItem = document.querySelector('.dragging');
+    const siblings = [...mergeFilePreview.querySelectorAll('.sortable-item:not(.dragging)')];
+    
+    const nextSibling = siblings.find(sibling => {
+      return e.clientY <= sibling.offsetTop + sibling.offsetHeight / 2;
+    });
+    
+    mergeFilePreview.insertBefore(draggingItem, nextSibling);
+  });
+  
+  mergeFilePreview.addEventListener('drop', () => {
+    // Update array order after drop
+    const newOrder = [...mergeFilePreview.querySelectorAll('.sortable-item')];
+    pdfFilesToMerge = newOrder.map(item => pdfFilesToMerge[item.dataset.index]);
+    showMergePreview(); // Refresh to update data-index
+  });
+}
+
+// Merge PDFs Function
+mergeBtn.addEventListener('click', async () => {
+  if (pdfFilesToMerge.length < 2) {
+    alert('Please select at least 2 PDF files to merge');
+    return;
+  }
+  
+  loading.style.display = 'block';
+  
+  try {
+    const { PDFDocument } = PDFLib;
+    const mergedPdf = await PDFDocument.create();
+    
+    // Process each PDF
+    for (const file of pdfFilesToMerge) {
+      const fileBytes = await file.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(fileBytes);
+      
+      // Add page numbers if enabled
+      if (addPageNumbers.checked) {
+        const pages = pdfDoc.getPages();
+        pages.forEach((page, i) => {
+          page.drawText(`Page ${i + 1}`, {
+            x: page.getWidth() - 50,
+            y: 20,
+            size: 10,
+          });
+        });
+      }
+      
+      const pages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
+      pages.forEach(page => mergedPdf.addPage(page));
+    }
+    
+    const mergedPdfBytes = await mergedPdf.save();
+    saveAs(new Blob([mergedPdfBytes], { type: 'application/pdf' }), 'merged-document.pdf');
+    
+  } catch (error) {
+    alert('Error merging PDFs: ' + error.message);
+    console.error(error);
+  } finally {
+    loading.style.display = 'none';
+  }
+});
+
+clearMergeBtn.addEventListener('click', () => {
+  pdfFilesToMerge = [];
+  mergeFileInput.value = '';
+  mergePreviewSection.style.display = 'none';
+});
