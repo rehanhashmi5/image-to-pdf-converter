@@ -271,6 +271,15 @@ document.addEventListener('DOMContentLoaded', function() {
         return mm * 2.83465; // 1mm = 2.83465 points
     }
 });
+document.getElementById('selectFiles').addEventListener('click', function() {
+  document.getElementById('fileInput').click();
+});
+
+document.getElementById('fileInput').addEventListener('change', function(e) {
+  if (e.target.files.length) {
+    handleFiles(e.target.files); // Make sure handleFiles() exists
+  }
+});
 // ======================
 // WORD TO PDF CONVERTER
 // ======================
