@@ -556,3 +556,8 @@ clearMergeBtn.addEventListener('click', () => {
   mergeFileInput.value = '';
   mergePreviewSection.style.display = 'none';
 });
+// Add error handling for large files
+if (file.size > 50 * 1024 * 1024) {
+  alert('Max file size: 50MB');
+  return;
+}
