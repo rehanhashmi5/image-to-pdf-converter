@@ -561,3 +561,9 @@ if (file.size > 50 * 1024 * 1024) {
   alert('Max file size: 50MB');
   return;
 }
+// Real API example (sign up for a free key)
+fetch('https://api.cloudconvert.com/v2/convert', {
+  headers: {
+    'Authorization': 'Bearer YOUR_API_KEY'
+  }
+})
